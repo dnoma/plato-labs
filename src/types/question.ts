@@ -19,6 +19,9 @@ export interface Question {
   options: QuestionOption[];
   explanation: string;
   created_at: string;
+  tags?: string[]; // Optional tags for better organization
+  source?: string; // Optional source of the question (e.g., MPRE, MBE)
+  time_estimate?: number; // Estimated time to complete in minutes
 }
 
 export interface UserQuestionProgress {
@@ -28,4 +31,18 @@ export interface UserQuestionProgress {
   selected_option_id?: string;
   attempts: number;
   last_attempted_at?: string;
+  time_spent?: number; // Time spent on the question in seconds
+  notes?: string; // User's notes on the question
+  is_bookmarked?: boolean; // Whether the user has bookmarked the question
+}
+
+export interface UserStudyStats {
+  total_questions_attempted: number;
+  total_questions_completed: number;
+  total_time_spent: number; // Time spent studying in seconds
+  average_score: number; // Percentage of correct answers
+  strengths: QuestionCategory[]; // Categories with high success rate
+  weaknesses: QuestionCategory[]; // Categories with low success rate
+  streak_days: number; // Number of consecutive days studied
+  last_study_date: string;
 }
