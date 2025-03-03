@@ -2,8 +2,14 @@
 import { createClient } from '@supabase/supabase-js';
 import type { Question, UserQuestionProgress, UserStudyStats, QuestionCategory } from '@/types/question';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
+// Check for environment variables and provide fallbacks for development
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+
+// Log helpful error message if environment variables are missing
+if (!supabaseUrl || !supabaseAnonKey) {
+  console.error('Supabase environment variables are missing. Make sure VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY are set.');
+}
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
