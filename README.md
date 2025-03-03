@@ -57,14 +57,12 @@ Visit our [pricing page](https://platolegal.com/pricing) for current subscriptio
 ## Contact
 
 For support or inquiries:
-- Email: support@platolegal.com
-- Phone: (800) 555-PLATO
-- Web: [platolegal.com/contact](https://platolegal.com/contact)
+- Email: phiso.wise@gmail.com
 
 ## About The Team
 
-PLATO was created by a team of legal educators, practicing attorneys, and technology experts with the mission of making bar exam preparation more efficient and effective for all law school graduates.
+PLATO was created by a team of legal students, product designers and technology experts with the mission of making bar exam preparation more efficient and effective for all law school graduates.
 
 ---
 
-© 2025 PLATO Legal Technologies, Inc. All rights reserved.
+© 2025 PLATO LABS Pte. Lte. All rights reserved.
