@@ -1,57 +1,161 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Menu, X, User, LogOut } from 'lucide-react';
 
 const Header = () => {
-  const [scrolled, setScrolled] = useState(false);
-  
-  useEffect(() => {
-    const handleScroll = () => {
-      const isScrolled = window.scrollY > 20;
-      if (isScrolled !== scrolled) {
-        setScrolled(isScrolled);
-      }
-    };
-    
-    window.addEventListener('scroll', handleScroll);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, [scrolled]);
-  
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const location = useLocation();
+  const { user, signOut } = useAuth();
+
+  const isActive = (path: string) => {
+    return location.pathname === path;
+  };
+
   return (
-    <header 
-      className={cn(
-        "fixed top-0 left-0 right-0 z-50 py-4 transition-all duration-300 px-6 md:px-10",
-        scrolled ? "bg-white/80 backdrop-blur-md shadow-sm" : "bg-transparent"
-      )}
-    >
-      <div className="max-w-7xl mx-auto flex items-center justify-between">
+    <header className="sticky top-0 z-40 w-full border-b bg-background/80 backdrop-blur">
+      <div className="container flex h-16 items-center justify-between px-4">
         <div className="flex items-center gap-2">
-          <span className="text-2xl font-serif font-bold text-plato-900">PLATO</span>
+          <Link to="/" className="flex items-center gap-2">
+            <span className="text-2xl font-bold text-primary">PLATO</span>
+          </Link>
+          
+          <nav className="hidden md:flex items-center gap-6 ml-6">
+            <Link 
+              to="/" 
+              className={`text-sm font-medium ${isActive('/') ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+            >
+              Home
+            </Link>
+            <Link 
+              to="/questions" 
+              className={`text-sm font-medium ${isActive('/questions') ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+            >
+              Practice
+            </Link>
+            <Link 
+              to="/dashboard" 
+              className={`text-sm font-medium ${isActive('/dashboard') ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+            >
+              Dashboard
+            </Link>
+          </nav>
         </div>
-        
-        <nav className="hidden md:flex items-center space-x-8">
-          <a href="#features" className="text-sm text-foreground/80 hover:text-plato-700 transition-colors">Features</a>
-          <a href="#benefits" className="text-sm text-foreground/80 hover:text-plato-700 transition-colors">Benefits</a>
-          <a href="#how-it-works" className="text-sm text-foreground/80 hover:text-plato-700 transition-colors">How It Works</a>
-        </nav>
-        
+
         <div className="flex items-center gap-4">
-          <Button
-            variant="outline"
-            size="sm"
-            className="hidden sm:inline-flex text-plato-900 border-plato-300 hover:bg-plato-50"
-          >
-            Log in
-          </Button>
-          <Button
-            size="sm"
-            className="bg-plato-600 text-white hover:bg-plato-700"
-          >
-            Sign up
-          </Button>
+          {user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                  <Avatar className="h-8 w-8">
+                    <AvatarFallback className="bg-plato-100 text-plato-800">
+                      {user.email?.charAt(0).toUpperCase() || 'U'}
+                    </AvatarFallback>
+                  </Avatar>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56" align="end" forceMount>
+                <DropdownMenuLabel className="font-normal">
+                  <div className="flex flex-col space-y-1">
+                    <p className="text-sm font-medium leading-none">Account</p>
+                    <p className="text-xs leading-none text-muted-foreground">
+                      {user.email}
+                    </p>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link to="/dashboard" className="cursor-pointer flex w-full items-center">
+                    <User className="mr-2 h-4 w-4" />
+                    Dashboard
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  className="cursor-pointer"
+                  onClick={() => signOut()}
+                >
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Log out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Button asChild>
+              <Link to="/">Sign In</Link>
+            </Button>
+          )}
+
+          <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+            <SheetTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="md:hidden"
+                aria-label="Toggle Menu"
+              >
+                <Menu className="h-6 w-6" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left">
+              <SheetHeader>
+                <SheetTitle>PLATO</SheetTitle>
+              </SheetHeader>
+              <nav className="flex flex-col gap-4 mt-6">
+                <Link
+                  to="/"
+                  className="text-base font-medium py-2"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Home
+                </Link>
+                <Link
+                  to="/questions"
+                  className="text-base font-medium py-2"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Practice
+                </Link>
+                <Link
+                  to="/dashboard"
+                  className="text-base font-medium py-2"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Dashboard
+                </Link>
+                {user && (
+                  <button
+                    onClick={() => {
+                      signOut();
+                      setMobileMenuOpen(false);
+                    }}
+                    className="flex items-center text-base font-medium py-2 text-left"
+                  >
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Log out
+                  </button>
+                )}
+              </nav>
+            </SheetContent>
+          </Sheet>
         </div>
       </div>
     </header>
